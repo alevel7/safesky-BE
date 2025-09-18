@@ -75,8 +75,8 @@ export class Strip extends Document {
     @Prop()
     passengerOnBoard: number;
 
-    // @Prop()
-    // clearedRoute: number;
+    @Prop()
+    aircraftRegistration: string;
 
     @Prop()
     wakeTurbulence: string; //H, L, M, J)

@@ -74,8 +74,9 @@ export class CreateStripDto {
     @IsNumber()
     passengerOnBoard: number;
     
-    // @IsNumber()
-    // clearedRoute: number;
+    @IsString()
+    @IsNotEmpty()
+    aircraftRegistration: string;
 
     @IsString()
     wakeTurbulence: string; //H, L, M, J)
