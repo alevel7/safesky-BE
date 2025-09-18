@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { StripsService } from './strips.service';
 import { CreateStripDto } from './dto/create-strip.dto';
 import { UpdateStripDto } from './dto/update-strip.dto';
@@ -13,8 +13,8 @@ export class StripsController {
   }
 
   @Get()
-  findAll() {
-    return this.stripsService.findAll();
+  findAll(@Query('archived') archived: boolean) {
+    return this.stripsService.findAll(archived);
   }
 
   @Get(':id')

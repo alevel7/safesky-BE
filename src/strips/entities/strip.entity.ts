@@ -16,7 +16,7 @@ export class Strip extends Document {
     plannedRoute: string;
 
     @Prop()
-    speed: string;
+    speed: number;
 
     @Prop()
     arrivalAerodrome: string;
@@ -49,10 +49,10 @@ export class Strip extends Document {
     clearedFlightLevel: string;
 
     @Prop()
-    altitude: string;
+    altitude: number;
 
     @Prop()
-    heading: string;
+    heading: number;
 
     @Prop()
     estimatedTimeOfArrival: string;
@@ -64,7 +64,7 @@ export class Strip extends Document {
     expectedApproachTime: string;
 
     @Prop()
-    frequency: string;
+    frequency: number;
     
     @Prop()
     stripType: string;
@@ -75,8 +75,8 @@ export class Strip extends Document {
     @Prop()
     passengerOnBoard: number;
 
-    @Prop()
-    clearedRoute: number;
+    // @Prop()
+    // clearedRoute: number;
 
     @Prop()
     wakeTurbulence: string; //H, L, M, J)

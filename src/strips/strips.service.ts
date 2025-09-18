@@ -13,10 +13,8 @@ export class StripsService {
     return this.stripModel.create({...createStripDto})
   }
 
-  findAll(): Promise<Strip[]> {
-    return this.stripModel.find({
-      isArchived: false
-    }).exec()
+  findAll(archived: boolean = false): Promise<Strip[]> {
+    return this.stripModel.find({ isArchived: archived }).exec()
   }
 
   findOne(id: number) {
