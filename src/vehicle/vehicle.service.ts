@@ -14,14 +14,14 @@ export class VehicleService {
   }
 
   findAll() {
-    return `This action returns all vehicle`;
+    return this.vehicleModel.find().exec()
   }
 
   findOne(id: number) {
     return `This action returns a #${id} vehicle`;
   }
 
-  update(id: number, updateVehicleDto: UpdateVehicleDto) {
+  update(id: string, updateVehicleDto: UpdateVehicleDto) {
      return this.vehicleModel.findByIdAndUpdate(id, {
       ...updateVehicleDto
     }, {
