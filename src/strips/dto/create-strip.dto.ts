@@ -15,7 +15,7 @@ export class CreateStripDto {
     plannedRoute: string;
 
     @IsNumber()
-    speed: string;
+    speed: number;
 
     @IsNotEmpty()
     arrivalAerodrome: string;
