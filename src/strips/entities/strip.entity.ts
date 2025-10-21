@@ -37,6 +37,21 @@ export class Strip extends Document {
     estimatedTimeOver: string;
 
     @Prop()
+    requestedTrackTime:string;
+
+    @Prop()
+    reportedIntersectionTime:string;
+
+    @Prop()
+    timeOfClearance:string;
+
+    @Prop()
+    startTime: string;
+
+    @Prop()
+    deliveredTime: string;
+
+    @Prop()
     actualTimeOver: string;
 
     @Prop()
