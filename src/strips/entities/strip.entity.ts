@@ -25,7 +25,10 @@ export class Strip extends Document {
     runway: string;
 
     @Prop()
-    clearanceType: string; //I,V, Y, Z
+    clearanceTime: string; //I,V, Y, Z
+
+    @Prop()
+    flightRule: string; //I,V, Y, Z
 
     @Prop()
     squawkCode: string;

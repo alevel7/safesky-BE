@@ -48,13 +48,17 @@ export class CreateStripDto {
 
     @IsOptional()
     @IsString()
+    flightRule: string; //I, V, Y, Z
+
+    @IsOptional()
+    @IsString()
     timeAtTransfer: string; //Reported time at transfer
 
     @IsString()
     actualTimeLeavingHold: string; //ALTH
 
-    // @IsString()
-    // clearedFlightLevel: string;
+    @IsString()
+    clearedFlightLevel: string;
 
     @IsOptional()
     @IsNumber()
