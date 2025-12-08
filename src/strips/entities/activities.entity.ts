@@ -1,0 +1,26 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Types } from 'mongoose';
+
+@Schema({ timestamps: true })
+export class Activity extends Document {
+    @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+    user: Types.ObjectId;
+
+    @Prop({ required: true })
+    type: string;
+
+    @Prop({ required: true })
+    actionType: string;
+
+    @Prop({ type: Object, default: {} })
+    meta: Record<string, any>;
+
+    @Prop({ default: Date.now })
+    createdAt: Date;
+
+
+    @Prop({ default: Date.now })
+    updatedAt: Date;
+}
+
+export const ActivitySchema = SchemaFactory.createForClass(Activity);

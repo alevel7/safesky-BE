@@ -57,8 +57,8 @@ export class CreateStripDto {
     @IsString()
     actualTimeLeavingHold: string; //ALTH
 
-    @IsString()
-    clearedFlightLevel: string;
+    // @IsString()
+    // clearedFlightLevel: string;
 
     @IsOptional()
     @IsNumber()

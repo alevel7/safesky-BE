@@ -1,35 +1,104 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Query } from '@nestjs/common';
 import { CreateStripDto } from './dto/create-strip.dto';
 import { UpdateStripDto } from './dto/update-strip.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Strip } from './entities/strip.entity';
 import { Model } from 'mongoose';
+import { Activity } from './entities/activities.entity';
+import { ILoggedInUser } from 'src/auth/dto/login-auth.dto';
+import { actionType, activityType } from './dto/activity.dto';
 
 @Injectable()
 export class StripsService {
-  constructor(@InjectModel(Strip.name) private readonly stripModel: Model<Strip>) { }
+  constructor(
+    @InjectModel(Strip.name) private readonly stripModel: Model<Strip>,
+    @InjectModel(Activity.name) private readonly activityModel: Model<Activity>,
+  ) { }
   
-  create(createStripDto: CreateStripDto) {
-    return this.stripModel.create({...createStripDto})
+  async create(user: ILoggedInUser | null, createStripDto: CreateStripDto) {
+    const data = await this.stripModel.create({...createStripDto})
+    await this.addActivity('STRIP', 'CREATE_STRIP', data, user);
+    return data;
   }
 
   findAll(archived: boolean = false): Promise<Strip[]> {
     return this.stripModel.find({ isArchived: archived }).exec()
   }
+  async update(id: string, updateStripDto: UpdateStripDto, user: ILoggedInUser | null):Promise<Strip | null> {
 
-  findOne(id: number) {
-    return `This action returns a #${id} strip`;
-  }
-
-  update(id: string, updateStripDto: UpdateStripDto):Promise<Strip | null> {
-    return this.stripModel.findByIdAndUpdate(id, {
+    const data = await this.stripModel.findByIdAndUpdate(id, {
       ...updateStripDto
     }, {
       new:true
-    }).exec()
+    }).exec();
+    if (updateStripDto.isArchived) {
+      await this.addActivity('STRIP', 'ARCHIVE_STRIP', data, user);
+    }
+    await this.addActivity('STRIP', 'UPDATE_STRIP', data, user);
+    return data;
   }
 
-  archive(id: number) {
-    return `This action removes a #${id} strip`;
+  async addActivity(type: activityType = 'STRIP', action: actionType, meta: any, user: ILoggedInUser | null) {
+    if (user){
+      await this.activityModel.create({
+        meta,
+        user: user.sub,
+        actionType: action,
+        type,
+        updatedAt: new Date().toISOString(),
+      })
+    }
+    
   }
+
+  async getAuditLogs(
+    user: ILoggedInUser | null, 
+    page: number = 1, 
+    limit: number = 10,
+    type: activityType | null,
+    action: actionType | null,
+    startDate: string | null,
+    endDate: string | null,
+  ){
+    const query: any = {};
+
+    if (type) {
+      query.type = type;
+    }
+
+    if (action) {
+      query.actionType = action;
+    }
+
+    if (startDate || endDate) {
+      query.createdAt = {};
+      if (startDate) {
+        query.createdAt.$gte = new Date(startDate);
+      }
+      if (endDate) {
+        query.createdAt.$lte = new Date(endDate);
+      }
+    }
+
+    if (user) {
+      query.user = user.sub;
+    }
+
+    const result = this.activityModel
+      .find(query)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .sort({ createdAt: -1 })
+      .exec();
+
+    return { result, query }
+  }
+
+  async getUserActivities(user: ILoggedInUser | null): Promise<Activity[]> {
+    if (user) {
+      return this.activityModel.find({ user: user.sub }).exec();
+    }
+    return this.activityModel.find().exec();
+  }
+
 }
