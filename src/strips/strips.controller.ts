@@ -12,6 +12,7 @@ export class StripsController {
   constructor(private readonly stripsService: StripsService) {}
 
   @Post()
+  @UseGuards(OptionalAuthGuard)
   create(@OptionalUser() user: ILoggedInUser | null, @Body() createStripDto: CreateStripDto) {
     return this.stripsService.create(user, createStripDto);
   }
@@ -34,10 +35,10 @@ export class StripsController {
     @OptionalUser() user: ILoggedInUser | null, 
     @Query('page') page: number, 
     @Query('limit') limit: number,
-    @Query('type') type: activityType,
-    @Query('action') action: actionType,
-    @Query('startDate') startDate: string,
-    @Query('endDate') endDate: string,
+    @Query('type') type: activityType | null,
+    @Query('action') action: actionType | null,
+    @Query('startDate') startDate: string | null,
+    @Query('endDate') endDate: string | null,
   ) {
     // Implementation for fetching audit logs can be added here
     return this.stripsService.getAuditLogs( user, page, limit, type, action, startDate, endDate);

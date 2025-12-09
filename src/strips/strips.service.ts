@@ -16,6 +16,8 @@ export class StripsService {
   ) { }
   
   async create(user: ILoggedInUser | null, createStripDto: CreateStripDto) {
+    console.log('initial user', user);
+    
     const data = await this.stripModel.create({...createStripDto})
     await this.addActivity('STRIP', 'CREATE_STRIP', data, user);
     return data;
@@ -40,6 +42,8 @@ export class StripsService {
 
   async addActivity(type: activityType = 'STRIP', action: actionType, meta: any, user: ILoggedInUser | null) {
     if (user){
+      console.log(user);
+      
       await this.activityModel.create({
         meta,
         user: user.sub,
@@ -83,15 +87,15 @@ export class StripsService {
     if (user) {
       query.user = user.sub;
     }
-
-    const result = this.activityModel
+    const result = await this.activityModel
       .find(query)
       .skip((page - 1) * limit)
+      .populate('user', '-password')
       .limit(limit)
       .sort({ createdAt: -1 })
       .exec();
 
-    return { result, query }
+    return { result, query, page, limit };
   }
 
   async getUserActivities(user: ILoggedInUser | null): Promise<Activity[]> {

@@ -15,7 +15,6 @@ export class UserController {
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   findOne(@LoggedInUser() user: ILoggedInUser, @Param('id') id: string) {
-    return user;
     return this.userService.findOne(id);
   }
 

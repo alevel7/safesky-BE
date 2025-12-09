@@ -32,7 +32,9 @@ export class AuthService {
         password: hashedPassword
       };
       const createdUser = await this.userModel.create(newUser);
-      return createdUser;
+      const userObject = createdUser.toObject();
+      const { password, ...result } = userObject;
+      return result;
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
@@ -66,10 +68,10 @@ export class AuthService {
     const user = await this.validateUser(licenceNumber, password);
     const payload = { sub: user._id, licenceNumber: user.licenceNumber };
     const userObject = user.toObject();
-    delete userObject.password;
+    const { password: _, ...result } = userObject;
     return { 
       access_token: this.jwtService.sign(payload),
-      user: userObject
+      user: result
     };
   }
 }
